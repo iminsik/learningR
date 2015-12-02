@@ -1,0 +1,38 @@
+---
+title: "BabyCat"
+author: "Insik Cho"
+date: "December 1, 2015"
+output: html_document
+---
+
+Myang!!!
+
+```{r}
+library('tidyr')
+library('dplyr')
+library('ggplot2')
+
+setwd('c:/Joe_Projects/learningR/Babycat/')
+#load('n2015.RData')
+gdp <- read.csv('./msa_gdp_2014.csv') %>%
+  rename(StateCode = Fips)
+pop <- read.csv('./msa_pop_2013.csv') %>%
+  rename(StateCode = Target.Geo.Id2) %>%
+  mutate(StateCode = as.character(StateCode))
+
+occ <- data.frame(StateCode = rownames(n),n[,1:94])
+
+occ_gdp <- left_join(occ, gdp, by = 'StateCode')
+occ_pop <- left_join(occ,
+                     select(filter(pop, !is.na(StateCode)),
+                            StateCode,
+                            April.1..2010...Census,
+                            Population.Estimate..as.of.July.1....2013),
+                     by = 'StateCode') %>%
+  rename(Census2010 = April.1..2010...Census,
+         PopEst12013 = Population.Estimate..as.of.July.1....2013)
+
+filter(occ_gdp, is.na(Area))
+select(filter(occ_gdp, is.na(Area)), StateCode)
+```
+
